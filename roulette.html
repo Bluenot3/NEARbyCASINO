@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cosmic Roulette Adventure</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: 'Orbitron', sans-serif;
+            background: #000033;
+            color: #ffffff;
+            overflow: hidden;
+            height: 100vh;
+        }
+
+        .casino-container {
+            display: flex;
+            height: 100vh;
+            background: linear-gradient(135deg, #000033 0%, #000066 100%);
+        }
+
+        .game-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            padding: 20px;
+            background: rgba(0, 0, 102, 0.5);
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .z-logo {
+            width: 100px;
+            filter: drop-shadow(0 0 10px #00c1de);
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .game-area {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-grow: 1;
+        }
+
+        .roulette-wheel {
+            width: 300px;
+            height: 300px;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg,
+                #00c1de 0deg 9.73deg,
+                #000066 9.73deg 19.46deg,
+                #5f8afa 19.46deg 29.19deg,
+                #000066 29.19deg 38.92deg,
+                #00c1de 38.92deg 48.65deg,
+                #000066 48.65deg 58.38deg,
+                #5f8afa 58.38deg 68.11deg,
+                #000066 68.11deg 77.84deg,
+                #00c1de 77.84deg 87.57deg,
+                #000066 87.57deg 97.3deg,
+                #5f8afa 97.3deg 107.03deg,
+                #000066 107.03deg 116.76deg,
+                #00c1de 116.76deg 126.49deg,
+                #000066 126.49deg 136.22deg,
+                #5f8afa 136.22deg 145.95deg,
+                #000066 145.95deg 155.68deg,
+                #00c1de 155.68deg 165.41deg,
+                #000066 165.41deg 175.14deg,
+                #5f8afa 175.14deg 184.87deg,
+                #000066 184.87deg 194.6deg,
+                #00c1de 194.6deg 204.33deg,
+                #000066 204.33deg 214.06deg,
+                #5f8afa 214.06deg 223.79deg,
+                #000066 223.79deg 233.52deg,
+                #00c1de 233.52deg 243.25deg,
+                #000066 243.25deg 252.98deg,
+                #5f8afa 252.98deg 262.71deg,
+                #000066 262.71deg 272.44deg,
+                #00c1de 272.44deg 282.17deg,
+                #000066 282.17deg 291.9deg,
+                #5f8afa 291.9deg 301.63deg,
+                #000066 301.63deg 311.36deg,
+                #00c1de 311.36deg 321.09deg,
+                #000066 321.09deg 330.82deg,
+                #5f8afa 330.82deg 340.55deg,
+                #000066 340.55deg 350.28deg,
+                #00c1de 350.28deg 360deg
+            );
+            position: relative;
+            box-shadow: 0 0 50px rgba(0, 193, 222, 0.5);
+            transition: transform 5s cubic-bezier(0.25, 0.1, 0.25, 1);
+        }
+
+        .roulette-wheel::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 90%;
+            height: 90%;
+            background: radial-gradient(circle, rgba(0,0,102,1) 0%, rgba(0,0,51,1) 100%);
+            border-radius: 50%;
+            z-index: 1;
+        }
+
+        .roulette-wheel::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 15px;
+            height: 15px;
+            background: #ffffff;
+            border-radius: 50%;
+            z-index: 2;
+            box-shadow: 0 0 10px #ffffff;
+        }
+
+        .betting-area {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            background: rgba(0, 0, 102, 0.5);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 193, 222, 0.3);
+        }
+
+        .bet-button {
+            background: rgba(0, 193, 222, 0.2);
+            border: 2px solid #00c1de;
+            color: #ffffff;
+            padding: 15px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 5px;
+            text-shadow: 0 0 5px #00c1de;
+        }
+
+        .bet-button:hover {
+            background: rgba(0, 193, 222, 0.4);
+            transform: scale(1.05);
+            box-shadow: 0 0 15px #00c1de;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            background: rgba(0, 0, 102, 0.5);
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        #bet-amount {
+            padding: 10px;
+            font-size: 16px;
+            background: rgba(0, 0, 102, 0.5);
+            border: 2px solid #00c1de;
+            color: #ffffff;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+
+        #place-bet {
+            padding: 10px 20px;
+            font-size: 16px;
+            background: #00c1de;
+            color: #000033;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(0, 193, 222, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(0, 193, 222, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 193, 222, 0); }
+        }
+
+        #place-bet:hover {
+            background: #5f8afa;
+            box-shadow: 0 0 15px #5f8afa;
+        }
+
+        .balance {
+            font-size: 18px;
+            text-align: center;
+            padding: 10px;
+            background: rgba(0, 0, 102, 0.5);
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+
+        .side-panel {
+            width: 300px;
+            background: rgba(0, 0, 102, 0.7);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            box-shadow: -5px 0 15px rgba(0, 193, 222, 0.3);
+        }
+
+        .bet-history, .stats, #chat-box {
+            background: rgba(0, 0, 102, 0.5);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .bet-history h3, .stats h3 {
+            margin-top: 0;
+            color: #00c1de;
+        }
+
+        .bet-history ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        .bet-history li {
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+
+        .stats p {
+            margin: 5px 0;
+            font-size: 14px;
+        }
+
+        #chat-box {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #chat-messages {
+            flex-grow: 1;
+            overflow-y: auto;
+            margin-bottom: 10px;
+        }
+
+        #chat-input {
+            display: flex;
+        }
+
+        #chat-input input {
+            flex-grow: 1;
+            padding: 5px;
+            border: none;
+            border-radius: 5px 0 0 5px;
+        }
+
+        #chat-input button {
+            padding: 5px 10px;
+            background: #00c1de;
+            color: #000033;
+            border: none;
+            border-radius: 0 5px 5px 0;
+            cursor: pointer;
+        }
+
+        .blockchain-ticker {
+            background: rgba(0, 0, 102, 0.5);
+            padding: 10px;
+            font-size: 14px;
+            margin-top: 20px;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+
+        .ticker-content {
+            display: inline-block;
+            white-space: nowrap;
+            animation: ticker 20s linear infinite;
+        }
+
+        @keyframes ticker {
+            0% { transform: translate3d(100%, 0, 0); }
+            100% { transform: translate3d(-100%, 0, 0); }
+        }
+
+        #result {
+            font-size: 24px;
+            text-align: center;
+            margin-top: 20px;
+            color: #00c1de;
+            text-shadow: 0 0 10px #00c1de;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+
+        .modal-content {
+            background-color: #000066;
+            margin: 15% auto;
+            padding: 20px;
+            border: 1px solid #00c1de;
+            width: 80%;
+            max-width: 500px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #00c1de;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        #reset-game {
+            background: #00c1de;
+            color: #000033;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+
+        #reset-game:hover {
+            background: #5f8afa;
+        }
+
+        .numbers-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 5px;
+            margin-top: 20px;
+        }
+
+        .number-button {
+            background: rgba(0, 193, 222, 0.2);
+            border: 1px solid #00c1de;
+            color: #ffffff;
+            padding: 10px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-radius: 5px;
+        }
+
+        .number-button:hover {
+            background: rgba(0, 193, 222, 0.4);
+            transform: scale(1.05);
+        }
+
+        .number-button.selected {
+            background: rgba(95, 138, 250, 0.6);
+            border: 2px solid #5f8afa;
+        }
+
+        #selected-bets {
+            margin-top: 20px;
+            padding: 10px;
+            background: rgba(0, 0, 102, 0.5);
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="casino-container">
+        <div class="game-section">
+            <div class="header">
+                <img src="/api/placeholder/100/100" alt="Z Casino Logo" class="z-logo">
+                <h1>Cosmic Roulette Adventure</h1>
+            </div>
+            
+            <div class="game-area">
+                <div class="roulette-wheel" id="wheel"></div>
+                <div class="betting-area" id="betting-area">
+                    <div class="numbers-grid" id="numbers-grid"></div>
+                    <button class="bet-button" data-bet="red">Red</button>
+                    <button class="bet-button" data-bet="black">Black</button>
+                    <button class="bet-button" data-bet="green">Green (0)</button>
+                    <button class="bet-button" data-bet="even">Even</button>
+                    <button class="bet-button" data-bet="odd">Odd</button>
+                    <button class="bet-button" data-bet="1-18">1-18</button>
+                    <button class="bet-button" data-bet="19-36">19-36</button>
+                </div>
+            </div>
